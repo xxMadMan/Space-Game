@@ -41,6 +41,7 @@ public class PickUp : MonoBehaviour
                     {
                         //pass in object hit into the PickUpObject function
                         PickUpObject(hit.transform.gameObject);
+                        transform.gameObject.layer = 6;
                     }
                 }
             }
@@ -65,6 +66,7 @@ public class PickUp : MonoBehaviour
 
         }
     }
+
     void PickUpObject(GameObject pickUpObj)
     {
         if (pickUpObj.GetComponent<Rigidbody>()) //make sure the object has a RigidBody
