@@ -37,12 +37,10 @@ public class PickUp : MonoBehaviour
                 if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, pickUpRange))
                 {
                     //make sure pickup tag is attached
-                    if (hit.transform.gameObject.tag == "canPickUp")
-                    {
-                        //pass in object hit into the PickUpObject function
-                        PickUpObject(hit.transform.gameObject);
-                        transform.gameObject.layer = 6;
-                    }
+                    //pass in object hit into the PickUpObject function
+                    PickUpObject(hit.transform.gameObject);
+                    transform.gameObject.layer = 6;
+                  
                 }
             }
             else
