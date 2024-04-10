@@ -64,8 +64,10 @@
     <Compile Include="Assets\Scripts\Character Controller\PickUp.cs" />
     <Compile Include="Assets\Scripts\New Folder\Interactable.cs" />
     <Compile Include="Assets\Scripts\ColourSphere.cs" />
+    <Compile Include="Assets\DoorAnimation.cs" />
     <Compile Include="Assets\Scripts\Character Controller\Interaction.cs" />
     <Compile Include="Assets\Scripts\Character Controller\Character Movement.cs" />
+    <Compile Include="Assets\Scripts\New Folder\ButtonActivation.cs" />
     <Compile Include="Assets\RotatingSpace.cs" />
   </ItemGroup>
   <ItemGroup>
