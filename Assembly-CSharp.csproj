@@ -60,15 +60,17 @@
     <Analyzer Include="W:\2022.3.23f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\RotatingSpace.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Character Controller\PickUp.cs" />
     <Compile Include="Assets\Scripts\New Folder\Interactable.cs" />
     <Compile Include="Assets\Scripts\ColourSphere.cs" />
-    <Compile Include="Assets\DoorAnimation.cs" />
     <Compile Include="Assets\Scripts\Character Controller\Interaction.cs" />
+    <Compile Include="Assets\Scripts\DoorAnimation.cs" />
     <Compile Include="Assets\Scripts\Character Controller\Character Movement.cs" />
     <Compile Include="Assets\Scripts\New Folder\ButtonActivation.cs" />
-    <Compile Include="Assets\RotatingSpace.cs" />
+    <Compile Include="Assets\Scripts\Paper Locking.cs" />
+    <Compile Include="Assets\PickedUpObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\QuickOutline\Resources\Shaders\OutlineMask.shader" />
