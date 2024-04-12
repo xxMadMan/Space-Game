@@ -1974,7 +1974,7 @@ GameObject:
   - component: {fileID: 921371494}
   - component: {fileID: 921371497}
   - component: {fileID: 921371499}
-  - component: {fileID: 921371498}
+  - component: {fileID: 921371500}
   m_Layer: 0
   m_Name: Paper
   m_TagString: Untagged
@@ -2095,18 +2095,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &921371498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 921371492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a2edaf9c035b9842826519670058e58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &921371499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2124,6 +2112,19 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &921371500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 921371492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e4317278d470f49ab076757de29d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closeInspectionEnabled: 1
 --- !u!1 &962093162
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,6 +2157,7 @@ Transform:
   m_Children:
   - {fileID: 1640507018}
   - {fileID: 1416779380}
+  - {fileID: 1505096780}
   m_Father: {fileID: 991275116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &962093164
@@ -2623,6 +2625,70 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502113433}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1505096779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1505096780}
+  - component: {fileID: 1505096781}
+  m_Layer: 0
+  m_Name: Sensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1505096780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505096779}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 962093163}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1505096781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505096779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58e2a62997d2b00489fcd4cc91379096, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 2064864277}
+  range: 4
+  m_onInRange:
+    m_PersistentCalls:
+      m_Calls: []
+  m_onOutOfRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1640507019}
+        m_TargetAssemblyTypeName: DoorAnimation, Assembly-CSharp
+        m_MethodName: CloseDoor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Close
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1600874480
 GameObject:
   m_ObjectHideFlags: 0
@@ -2755,7 +2821,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 944522aefdfcb38458070f893caa68d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorAnimation: {fileID: 962093164}
+  doorAnimator: {fileID: 962093164}
+  doorSensor: {fileID: 1505096781}
 --- !u!23 &1640507021
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3008,6 +3075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91e4317278d470f49ab076757de29d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  closeInspectionEnabled: 1
 --- !u!1 &1696640357
 GameObject:
   m_ObjectHideFlags: 0
@@ -3260,8 +3328,8 @@ GameObject:
   - component: {fileID: 2064864282}
   - component: {fileID: 2064864281}
   - component: {fileID: 2064864280}
-  - component: {fileID: 2064864283}
   - component: {fileID: 2064864284}
+  - component: {fileID: 2064864283}
   - component: {fileID: 2064864279}
   - component: {fileID: 2064864278}
   m_Layer: 0
@@ -3398,12 +3466,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d7df39ba7da134db5d6f2548d320c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 2064864277}
-  holdPos: {fileID: 1808025334}
-  cam: {fileID: 1226961188}
   throwForce: 500
   pickUpRange: 5
   _interactableObjects: {fileID: 991275115}
+  player: {fileID: 2064864277}
+  holdPos: {fileID: 1808025334}
+  cam: {fileID: 1226961188}
+  holdingObj: 0
 --- !u!114 &2064864284
 MonoBehaviour:
   m_ObjectHideFlags: 0

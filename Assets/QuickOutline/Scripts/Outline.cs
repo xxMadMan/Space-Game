@@ -13,7 +13,6 @@ using System.Linq;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-
 public class Outline : MonoBehaviour {
   private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
 
@@ -81,6 +80,8 @@ public class Outline : MonoBehaviour {
 
   private bool needsUpdate;
 
+  private DisableScript disabler;
+
   void Awake() {
 
     // Cache renderers
@@ -98,6 +99,18 @@ public class Outline : MonoBehaviour {
 
     // Apply material properties immediately
     needsUpdate = true;
+
+    // Add script to disable outline after a delay
+    disabler = disabler ? disabler : AddDisableScript();
+  }
+
+  private DisableScript AddDisableScript()
+  {
+    DisableScript script = gameObject.AddComponent<DisableScript>();
+    script.script = this;
+    script.completionBehaviour = DisableScript.CompletionBehaviour.Disable;
+
+    return script;
   }
 
   void OnEnable() {
@@ -139,16 +152,18 @@ public class Outline : MonoBehaviour {
     }
   }
 
-  public IEnumerator OutLineTimer(){
-        yield return new WaitForSeconds(1f);
+  public void OutlineTimer(float disableDelay)
+  {
+    if (!disabler)
+      disabler = AddDisableScript();
 
-        StopAllCoroutines();
-        this.enabled = false;
+    disabler.delay = disableDelay;
+    disabler.enabled = true;
+    disabler.ResetTimer();
   }
 
-
-
-  void OnDisable() {
+  void OnDisable()
+  {
     foreach (var renderer in renderers) {
 
       // Remove outline shaders
