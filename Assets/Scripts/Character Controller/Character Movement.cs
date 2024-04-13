@@ -14,8 +14,12 @@ public class CharacterMovement : MonoBehaviour
     public float lookSpeed = 2f;
     public float lookXLimit = 90f;
     public float defaultHeight = 2f;
+    public float defaultRadius = 0.5f;
     public float crouchHeight = 1f;
+    public float crawlHeight = 0.01f;
+    public float crawlRadius = 0.01f;
     public float crouchSpeed = 3f;
+    public float crawlSpeed = 3f;
 
     [Header("")]
 
@@ -57,12 +61,21 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
+        ResetCharacterController();
+
         switch(movementState)
         {
             case MovementState.Ground: GroundMovement(); break;
             case MovementState.Ladder: LadderMovement(); break;
+            case MovementState.Crawlspace: CrawlSpaceMovement(); break;
             default: characterController.Move(Vector3.zero); break;
         }
+    }
+
+    private void ResetCharacterController()
+    {
+        characterController.height = defaultHeight;
+        characterController.radius = defaultRadius;
     }
 
     private void GroundMovement()
@@ -74,7 +87,7 @@ public class CharacterMovement : MonoBehaviour
 
         groundMovementState = SelectGroundMovementState();
 
-        characterController.height = (groundMovementState == GroundMovementState.Crouch) ? crouchHeight : defaultHeight;
+        if (groundMovementState == GroundMovementState.Crouch) characterController.height = crouchHeight;
 
         switch (groundMovementState)
         {
@@ -121,15 +134,25 @@ public class CharacterMovement : MonoBehaviour
             MovementState.Ground :
             MovementState.Ladder);
 
-        bool onLadder = movementState == MovementState.Ladder;
-
-        if (onLadder)
+        if (movementState == MovementState.Ladder)
         {
             ladder = _ladder;
             rotateToLadder = true;
+
+            return true;
         }
 
-        return onLadder;
+        return false;
+    }
+
+    public void EnableCrawlSpaceMovement()
+    {
+        movementState = MovementState.Crawlspace;
+    }
+
+    public void DisableCrawlSpaceMovement()
+    {
+        movementState = MovementState.Ground;
     }
 
     private void LadderMovement()
@@ -158,6 +181,25 @@ public class CharacterMovement : MonoBehaviour
         {
             AimCamera();
         }
+    }
+
+    private void CrawlSpaceMovement()
+    {
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
+
+        lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
+
+        groundMovementState = SelectGroundMovementState();
+
+        characterController.height = crawlHeight;
+        characterController.radius = crawlRadius;
+
+        lateralMovement *= crawlSpeed;
+
+        characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
+
+        AimCamera();
     }
 
     private void AimCamera()

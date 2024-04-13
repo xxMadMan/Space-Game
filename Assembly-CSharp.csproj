@@ -69,11 +69,13 @@
     <Compile Include="Assets\Scripts\Interactables\RandomColour.cs" />
     <Compile Include="Assets\Scripts\CameraLook.cs" />
     <Compile Include="Assets\Scripts\Character Controller\PickUpController.cs" />
+    <Compile Include="Assets\Scripts\Character Controller\Detection.cs" />
     <Compile Include="Assets\Scripts\Utilities\DisableScript.cs" />
     <Compile Include="Assets\Scripts\Data\InputMappings.cs" />
     <Compile Include="Assets\Scripts\Interactables\Button.cs" />
     <Compile Include="Assets\Scripts\RotatingSpace.cs" />
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
+    <Compile Include="Assets\Scripts\Interactables\CrawlSpace.cs" />
     <Compile Include="Assets\Scripts\Interactables\Computer.cs" />
     <Compile Include="Assets\Scripts\Data\CollisionLayers.cs" />
     <Compile Include="Assets\Scripts\Character Controller\Interaction.cs" />
