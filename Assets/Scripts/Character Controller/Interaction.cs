@@ -10,10 +10,12 @@ public class Interaction : MonoBehaviour
     public float hitRange = 3f;
 
     private PickUpController PickUpController;
+    private CharacterMovement CharacterMovement;
 
     private void Awake()
     {
         PickUpController = GetComponent<PickUpController>();
+        CharacterMovement = GetComponent<CharacterMovement>();
     }
 
     void Update()
@@ -58,7 +60,7 @@ public class Interaction : MonoBehaviour
 
         if (Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out hit, hitRange))
         {
-            Interactable _interactable = hit.transform.GetComponent<Interactable>();
+            Interactable _interactable = hit.transform.GetComponentInParent<Interactable>();
             //Debug.Log("Raycast hit");
 
             if (_interactable)
@@ -73,6 +75,11 @@ public class Interaction : MonoBehaviour
                     }
 
                     _interactable.InteractObject();
+
+                    if (_interactable.GetComponent<Ladder>())
+                    {
+                        CharacterMovement.ToggleLadderMovement(_interactable.transform);
+                    }
                 }
             }
         }
