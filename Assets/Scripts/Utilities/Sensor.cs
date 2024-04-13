@@ -4,6 +4,7 @@ using UnityEngine.Events;
 public class Sensor : MonoBehaviour
 {
     public GameObject target;
+    
     public float range = 4f;
 
     private bool inRange = false;

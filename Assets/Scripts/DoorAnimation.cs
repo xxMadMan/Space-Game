@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class DoorAnimation : Interactable
+public class DoorAnimation : Button
 {
     public Animator doorAnimator;
     public Sensor doorSensor;
