@@ -18,6 +18,7 @@ public class Computer : Interactable
 
     protected override void OnInteract()
     {
+        StopAllCoroutines();
         Camera.main.transform.parent = null;
         playerObject.SetActive(false);
         cameraState = 2;

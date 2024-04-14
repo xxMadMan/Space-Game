@@ -60,7 +60,7 @@ public class Outline : MonoBehaviour {
   private Color outlineColor = Color.white;
 
 
-  private float outlineWidth = 3f;
+  public float outlineWidth = 3f;
 
   [Header("Optional")]
 
@@ -102,6 +102,8 @@ public class Outline : MonoBehaviour {
 
     // Add script to disable outline after a delay
     disabler = disabler ? disabler : AddDisableScript();
+
+        this.enabled = false;
   }
 
   private DisableScript AddDisableScript()
