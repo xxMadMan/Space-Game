@@ -26,4 +26,11 @@ public class Detection : MonoBehaviour
             CharacterMovement.DisableCrawlSpaceMovement();
         }
     }
+
+    public bool InLadderRange(Ladder ladder)
+    {
+        Bounds bounds = ladder.GetComponentInChildren<Collider>().bounds;
+
+        return Mathf.Abs((transform.position - bounds.center).y) < bounds.extents.y;
+    }
 }

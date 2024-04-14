@@ -47,21 +47,31 @@ public class CharacterMovement : MonoBehaviour
 
     private float rotationX = 0;
     private CharacterController characterController;
+    private Detection Detection;
 
-    private Transform ladder;
+    private Ladder ladder;
 
     private bool rotateToLadder;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        Detection = GetComponent<Detection>();
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        GetComponent<CapsuleCollider>().height = defaultHeight;
     }
 
     void Update()
     {
         ResetCharacterController();
+
+        if (movementState == MovementState.Ladder && !Detection.InLadderRange(ladder))
+        {
+            movementState = MovementState.Ground;
+        }
 
         switch(movementState)
         {
@@ -127,7 +137,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public bool ToggleLadderMovement(Transform _ladder)
+    public bool ToggleLadderMovement(Ladder _ladder)
     {
         movementState = (
             movementState == MovementState.Ladder ?
@@ -148,30 +158,34 @@ public class CharacterMovement : MonoBehaviour
     public void EnableCrawlSpaceMovement()
     {
         movementState = MovementState.Crawlspace;
+        GetComponent<CapsuleCollider>().height = crawlHeight;
     }
 
     public void DisableCrawlSpaceMovement()
     {
         movementState = MovementState.Ground;
+        GetComponent<CapsuleCollider>().height = defaultHeight;
     }
 
     private void LadderMovement()
     {
-        float forwardOffset = Vector3.Dot(transform.position - (ladder.position + ladder.forward * ladderClimbDistance), ladder.forward);
-        float horizontalDistance = Vector3.Dot(transform.position - ladder.position, ladder.right);
+        Transform ladderT = ladder.transform;
+
+        float forwardOffset = Vector3.Dot(transform.position - (ladderT.position + ladderT.forward * ladderClimbDistance), ladderT.forward);
+        float horizontalDistance = Vector3.Dot(transform.position - ladderT.position, ladderT.right);
         float climbingSpeed = Input.GetAxis("Vertical") * climbSpeed;
 
         Vector3 movement = Vector3.up * climbingSpeed;
-        movement += ladder.forward * -forwardOffset * 5f;
-        movement += ladder.right * -horizontalDistance * 5f;
+        movement += ladderT.forward * -forwardOffset * 5f;
+        movement += ladderT.right * -horizontalDistance * 5f;
 
         characterController.Move(movement * Time.deltaTime);
 
         if (rotateToLadder)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-ladder.forward), Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-ladderT.forward), Time.deltaTime * 5f);
 
-            if (Vector3.Dot(transform.forward, -ladder.forward) > 0.99f)
+            if (Vector3.Dot(transform.forward, -ladderT.forward) > 0.99f)
             {
                 rotateToLadder = false;
                 Debug.Log("Rotated");

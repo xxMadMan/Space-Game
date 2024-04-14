@@ -78,7 +78,7 @@ public class Interaction : MonoBehaviour
 
                     if (_interactable.GetComponent<Ladder>())
                     {
-                        CharacterMovement.ToggleLadderMovement(_interactable.transform);
+                        CharacterMovement.ToggleLadderMovement(_interactable.GetComponent<Ladder>());
                     }
                 }
             }
