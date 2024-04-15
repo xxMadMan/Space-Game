@@ -81,6 +81,14 @@ public class Interaction : MonoBehaviour
                         CharacterMovement.ToggleLadderMovement(_interactable.GetComponent<Ladder>());
                     }
                 }
+
+                //I tried to make this the throw key however because the ignore raycast is a layer, 
+                //we detect objects with layers. may need to be a tag Im not sure how to fix this without completely fucking shit up
+                if (Input.GetKeyDown(InputMappings.Interact)){
+                    if (_interactable.GetComponent<ComponentLocking>()){
+                        _interactable.GetComponent<ComponentLocking>().PlaceComponent();
+                    }
+                }
             }
         }
     }
