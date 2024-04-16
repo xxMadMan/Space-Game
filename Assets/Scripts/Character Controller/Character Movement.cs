@@ -8,74 +8,219 @@ public class CharacterMovement : MonoBehaviour
     public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
+    public float climbSpeed = 3f;
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;
-    public float lookXLimit = 45f;
+    public float lookXLimit = 90f;
     public float defaultHeight = 2f;
+    public float defaultRadius = 0.5f;
     public float crouchHeight = 1f;
+    public float crawlHeight = 0.01f;
+    public float crawlRadius = 0.01f;
     public float crouchSpeed = 3f;
+    public float crawlSpeed = 3f;
 
-    private Vector3 moveDirection = Vector3.zero;
+    [Header("")]
+
+    public float ladderClimbDistance = 1f;
+
+    public enum MovementState
+    {
+        Ground,
+        Crawlspace,
+        Ladder,
+    }
+
+    private enum GroundMovementState
+    {
+        Crouch,
+        Walk,
+        Run
+    }
+
+    public MovementState movementState = MovementState.Ground;
+    private GroundMovementState groundMovementState = GroundMovementState.Walk;
+
+    private Vector3 lateralMovement = Vector3.zero;
+    private float verticalSpeed = 0f;
+
     private float rotationX = 0;
     private CharacterController characterController;
+    private Detection Detection;
 
-    private bool canMove = true;
+    private Ladder ladder;
+
+    private bool rotateToLadder;
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        Detection = GetComponent<Detection>();
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        GetComponent<CapsuleCollider>().height = defaultHeight;
     }
 
     void Update()
     {
+        ResetCharacterController();
+
+        if (movementState == MovementState.Ladder && !Detection.InLadderRange(ladder))
+        {
+            movementState = MovementState.Ground;
+        }
+
+        switch(movementState)
+        {
+            case MovementState.Ground: GroundMovement(); break;
+            case MovementState.Ladder: LadderMovement(); break;
+            case MovementState.Crawlspace: CrawlSpaceMovement(); break;
+            default: characterController.Move(Vector3.zero); break;
+        }
+    }
+
+    private void ResetCharacterController()
+    {
+        characterController.height = defaultHeight;
+        characterController.radius = defaultRadius;
+    }
+
+    private void GroundMovement()
+    { 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+        lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
 
-        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        groundMovementState = SelectGroundMovementState();
+
+        if (groundMovementState == GroundMovementState.Crouch) characterController.height = crouchHeight;
+
+        switch (groundMovementState)
         {
-            moveDirection.y = jumpPower;
+            case GroundMovementState.Crouch: lateralMovement *= crouchSpeed; break;
+            case GroundMovementState.Walk: lateralMovement *= walkSpeed; break;
+            case GroundMovementState.Run: lateralMovement *= runSpeed; break;
         }
-        else
+
+        if (Input.GetButton("Jump") && characterController.isGrounded)
         {
-            moveDirection.y = movementDirectionY;
+            verticalSpeed = jumpPower;
         }
 
         if (!characterController.isGrounded)
         {
-            moveDirection.y -= gravity * Time.deltaTime;
+            verticalSpeed -= gravity * Time.deltaTime;
         }
 
-        if (Input.GetKey(KeyCode.R) && canMove)
-        {
-            characterController.height = crouchHeight;
-            walkSpeed = crouchSpeed;
-            runSpeed = crouchSpeed;
+        characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
 
+        AimCamera();
+    }
+
+    private GroundMovementState SelectGroundMovementState()
+    {
+        if (Input.GetKey(InputMappings.Run))
+        {
+            return GroundMovementState.Run;
+        }
+        else if (Input.GetKey(InputMappings.Crouch))
+        {
+            return GroundMovementState.Crouch;
         }
         else
         {
-            characterController.height = defaultHeight;
-            walkSpeed = 6f;
-            runSpeed = 12f;
+            return GroundMovementState.Walk;
         }
+    }
 
-        characterController.Move(moveDirection * Time.deltaTime);
+    public bool ToggleLadderMovement(Ladder _ladder)
+    {
+        movementState = (
+            movementState == MovementState.Ladder ?
+            MovementState.Ground :
+            MovementState.Ladder);
 
-        if (canMove)
+        if (movementState == MovementState.Ladder)
         {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+            ladder = _ladder;
+            rotateToLadder = true;
+
+            return true;
         }
+
+        return false;
+    }
+
+    public void EnableCrawlSpaceMovement()
+    {
+        movementState = MovementState.Crawlspace;
+        GetComponent<CapsuleCollider>().height = crawlHeight;
+    }
+
+    public void DisableCrawlSpaceMovement()
+    {
+        movementState = MovementState.Ground;
+        GetComponent<CapsuleCollider>().height = defaultHeight;
+    }
+
+    private void LadderMovement()
+    {
+        Transform ladderT = ladder.transform;
+
+        float forwardOffset = Vector3.Dot(transform.position - (ladderT.position + ladderT.forward * ladderClimbDistance), ladderT.forward);
+        float horizontalDistance = Vector3.Dot(transform.position - ladderT.position, ladderT.right);
+        float climbingSpeed = Input.GetAxis("Vertical") * climbSpeed;
+
+        Vector3 movement = Vector3.up * climbingSpeed;
+        movement += ladderT.forward * -forwardOffset * 5f;
+        movement += ladderT.right * -horizontalDistance * 5f;
+
+        characterController.Move(movement * Time.deltaTime);
+
+        if (rotateToLadder)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(-ladderT.forward), Time.deltaTime * 5f);
+
+            if (Vector3.Dot(transform.forward, -ladderT.forward) > 0.99f)
+            {
+                rotateToLadder = false;
+                Debug.Log("Rotated");
+            }
+        }
+        else
+        {
+            AimCamera();
+        }
+    }
+
+    private void CrawlSpaceMovement()
+    {
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
+
+        lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
+
+        groundMovementState = SelectGroundMovementState();
+
+        characterController.height = crawlHeight;
+        characterController.radius = crawlRadius;
+
+        lateralMovement *= crawlSpeed;
+
+        characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
+
+        AimCamera();
+    }
+
+    private void AimCamera()
+    {
+        rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+        rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
     }
 }
