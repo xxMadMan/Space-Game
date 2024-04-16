@@ -60,17 +60,13 @@ public class CharacterMovement : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        GetComponent<CapsuleCollider>().height = defaultHeight;
     }
 
     void Update()
     {
-        ResetCharacterController();
-
         if (movementState == MovementState.Ladder && !Detection.InLadderRange(ladder))
         {
-            movementState = MovementState.Ground;
+            SetMovementState(MovementState.Ground);
         }
 
         switch(movementState)
@@ -82,12 +78,6 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    private void ResetCharacterController()
-    {
-        characterController.height = defaultHeight;
-        characterController.radius = defaultRadius;
-    }
-
     private void GroundMovement()
     { 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -96,8 +86,6 @@ public class CharacterMovement : MonoBehaviour
         lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
 
         groundMovementState = SelectGroundMovementState();
-
-        if (groundMovementState == GroundMovementState.Crouch) characterController.height = crouchHeight;
 
         switch (groundMovementState)
         {
@@ -121,6 +109,29 @@ public class CharacterMovement : MonoBehaviour
         AimCamera();
     }
 
+    public void SetMovementState(MovementState setTo)
+    {
+        SetHeight(defaultHeight);
+        SetRadius(defaultRadius);
+
+        switch(setTo)
+        {
+            case MovementState.Ground:
+                movementState = MovementState.Ground;
+                break;
+            case MovementState.Ladder:
+                movementState = MovementState.Ladder;
+                break;
+            case MovementState.Crawlspace:
+                movementState = MovementState.Crawlspace;
+
+                SetHeight(crawlHeight);
+                SetRadius(crawlRadius);
+
+                break;
+        }
+    }
+
     private GroundMovementState SelectGroundMovementState()
     {
         if (Input.GetKey(InputMappings.Run))
@@ -139,7 +150,7 @@ public class CharacterMovement : MonoBehaviour
 
     public bool ToggleLadderMovement(Ladder _ladder)
     {
-        movementState = (
+        SetMovementState (
             movementState == MovementState.Ladder ?
             MovementState.Ground :
             MovementState.Ladder);
@@ -157,14 +168,12 @@ public class CharacterMovement : MonoBehaviour
 
     public void EnableCrawlSpaceMovement()
     {
-        movementState = MovementState.Crawlspace;
-        GetComponent<CapsuleCollider>().height = crawlHeight;
+        SetMovementState(MovementState.Crawlspace);
     }
 
     public void DisableCrawlSpaceMovement()
     {
-        movementState = MovementState.Ground;
-        GetComponent<CapsuleCollider>().height = defaultHeight;
+        SetMovementState(MovementState.Ground);
     }
 
     private void LadderMovement()
@@ -206,9 +215,6 @@ public class CharacterMovement : MonoBehaviour
 
         groundMovementState = SelectGroundMovementState();
 
-        characterController.height = crawlHeight;
-        characterController.radius = crawlRadius;
-
         lateralMovement *= crawlSpeed;
 
         characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
@@ -222,5 +228,17 @@ public class CharacterMovement : MonoBehaviour
         rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+    }
+
+    public void SetHeight(float setTo)
+    {
+        characterController.height = setTo;
+        GetComponent<CapsuleCollider>().height = setTo;
+    }
+
+    public void SetRadius(float setTo)
+    {
+        characterController.radius = setTo;
+        GetComponent<CapsuleCollider>().radius = setTo;
     }
 }
