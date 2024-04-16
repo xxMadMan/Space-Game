@@ -42,7 +42,7 @@ public class ComponentLocking : Interactable
             componentObject.transform.position = lockingPoint.transform.position;
             componentObject.transform.localRotation = lockingPoint.transform.localRotation;
             componentObject.GetComponent<Rigidbody>().isKinematic = true;
-            componentObject.transform.localScale = componentObject.transform.localScale * 0.75f;
+            componentObject.transform.localScale = componentObject.transform.localScale * 0.5f;
             componentObject.transform.parent = this.gameObject.transform;
             isPlaced = true;
         } else if (componentObject && isPlaced == true) {

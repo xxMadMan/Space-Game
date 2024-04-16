@@ -13,10 +13,12 @@ public class Lever : MonoBehaviour
         if (rotation == true)
         {
             transform.Rotate(new Vector3(0, 0, rotationPosition *2));
+            GameplayUI.SetDialogue(null);
         }
         else
         {
             transform.Rotate(new Vector3(0, 0, -rotationPosition * 2));
+
         }
     }
 
