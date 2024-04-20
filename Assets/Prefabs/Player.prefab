@@ -79,21 +79,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7519557f66cb649ad8a34c80168371, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkingFX: {fileID: 0}
   playerCamera: {fileID: 6517221155129004207}
   walkSpeed: 3
   runSpeed: 5
+  crouchSpeed: 3
+  crawlSpeed: 3
   climbSpeed: 6
-  jumpPower: 0
-  gravity: 10
-  lookSpeed: 2
-  lookXLimit: 80
   defaultHeight: 2
   defaultRadius: 0.5
   crouchHeight: 1
   crawlHeight: 0.01
   crawlRadius: 0.01
-  crouchSpeed: 3
-  crawlSpeed: 3
+  jumpPower: 0
+  gravity: 10
+  lookSpeed: 2
+  lookXLimit: 80
   ladderClimbDistance: 1
   movementState: 0
 --- !u!114 &7572559404896941483
@@ -256,6 +257,7 @@ Transform:
   m_Children:
   - {fileID: 8267537944346124052}
   - {fileID: 2091921464754060086}
+  - {fileID: 5310942771836372080}
   m_Father: {fileID: 4720445331478687850}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6517221155129004207
@@ -446,8 +448,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5310942771836372080}
+  m_Children: []
   m_Father: {fileID: 4720445331478687850}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6982052939259846395
@@ -527,12 +528,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6037168542017581449}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4506, z: 0.1632}
-  m_LocalScale: {x: 0.62403995, y: 0.56685346, z: 0.6897859}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.04940003, z: 0.16319998}
+  m_LocalScale: {x: 0.6240401, y: 0.56685346, z: 0.689786}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5075985842813491232}
+  m_Father: {fileID: 2058368931398500409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7512859284487155598
 MeshFilter:

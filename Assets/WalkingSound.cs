@@ -8,20 +8,33 @@ public class WalkingSound : MonoBehaviour
     public AudioClip[] audioClips;
     AudioSource audioSource;
 
-    void Awake (){
-    audioSource = GetComponent<AudioSource>();
-    }
+    [HideInInspector]
+    public float waitTime;
 
-    public void PlaySound()
+    public float walkingInterval = 0.6f;
+    public float runningInterval = 0.2f;
+
+    public bool isMoving = false;
+
+    [HideInInspector]
+    public float volume = 0f;
+
+    void Awake()
     {
-        int randomInt = Random.Range(1, audioClips.Length);
-        audioSource.clip = audioClips[randomInt];
-        audioSource.Play();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    void Update(){
-        if (Input.GetKey(InputMappings.Run)){
-            PlaySound();        
-        }
+    void Start(){
+        StartCoroutine(StartSound());
+    }
+
+    private IEnumerator StartSound(){
+        yield return new WaitUntil(() => isMoving);
+        yield return new WaitForSeconds(waitTime);
+        int randomInt = Random.Range(0, audioClips.Length);
+        audioSource.clip = audioClips[randomInt];
+        audioSource.volume = volume;
+        audioSource.Play();
+        StartCoroutine(StartSound());
     }
 }

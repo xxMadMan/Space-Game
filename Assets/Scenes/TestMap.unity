@@ -5822,6 +5822,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8264935963690298916, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
+      propertyPath: runSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8264935963690298916, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
+      propertyPath: walkingFX
+      value: 
+      objectReference: {fileID: 2013379339}
+    - target: {fileID: 8264935963690298916, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
+      propertyPath: movementState
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9417,7 +9429,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -9517,6 +9529,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 28d789f63644b65448114be6f9cf038b, type: 3}
   - {fileID: 8300000, guid: c16e8745797613245a6e7f32b633f235, type: 3}
   - {fileID: 8300000, guid: 818685ffe6bd0544bb725e089eae4b2a, type: 3}
+  waitTime: 0.1
+  walkingInterval: 0.6
+  runningInterval: 0.2
+  isMoving: 0
+  volume: 0
 --- !u!1 &2028697415 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3436443520238696508, guid: 16fe4def3d7ec3d4b9e7c273349cd508, type: 3}

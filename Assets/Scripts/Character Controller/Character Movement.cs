@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterMovement : MonoBehaviour
 {
+    public WalkingSound walkingFX;
+
+
     public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
@@ -40,10 +43,10 @@ public class CharacterMovement : MonoBehaviour
         Crouch,
         Crawlspace,
         Fall,
-        Ladder
+        Ladder,
     }
 
-    public MovementState movementState = MovementState.Walk;
+    public MovementState movementState = MovementState.Fall;
 
     private Vector3 lateralMovement = Vector3.zero;
 
@@ -71,21 +74,35 @@ public class CharacterMovement : MonoBehaviour
             SetMovementState(MovementState.Walk);
         }
 
-        if (Input.GetKeyDown(InputMappings.Crouch))
+        if (characterController.isGrounded)
         {
-            ToggleCrouch();
+            if (Input.GetKeyDown(InputMappings.Crouch))
+            {
+                ToggleCrouch();
+            }
+
+            if (Input.GetKeyDown(InputMappings.Run))
+            {
+                SetMovementState(MovementState.Run);
+            }
+
+            if (Input.GetKeyUp(InputMappings.Run))
+            {
+                SetMovementState(MovementState.Walk);
+            }
         }
 
-        switch(movementState)
+        switch (movementState)
         {
             case MovementState.Fall: Fall(); break;
             case MovementState.Ladder: ClimbLadder(); break;
             default: DoGroundMovement(); break;
         }
 
-        Debug.Log(movementState);
+        //Debug.Log(movementState);
 
         AimCamera();
+
     }
 
     public void SetMovementState(MovementState setTo)
@@ -106,6 +123,14 @@ public class CharacterMovement : MonoBehaviour
                 SetHeight(crawlHeight);
                 SetRadius(crawlRadius);
 
+                break;
+
+            case MovementState.Walk:
+  
+                break;
+
+            case MovementState.Run:
+                
                 break;
         }
 
@@ -191,7 +216,7 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 GroundMoveVector()
     { 
         float verticalSpeed = 0f;
-        float groundCastDistance = Mathf.Max(defaultRadius, defaultHeight) + 0.01f;
+        float groundCastDistance = Mathf.Max(defaultRadius, defaultHeight / 2) + 0.01f;
 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
@@ -201,8 +226,8 @@ public class CharacterMovement : MonoBehaviour
         switch (movementState)
         {
             case MovementState.Run: lateralMovement *= runSpeed; break;
-            case MovementState.Crouch: lateralMovement *= crouchSpeed; groundCastDistance = Mathf.Max(crouchRadius, crouchHeight) + 0.01f; break;
-            case MovementState.Crawlspace: lateralMovement *= crawlSpeed; groundCastDistance = Mathf.Max(crawlRadius, crawlHeight) + 0.01f; break;
+            case MovementState.Crouch: lateralMovement *= crouchSpeed; groundCastDistance = Mathf.Max(crouchRadius, crouchHeight / 2) + 0.01f; break;
+            case MovementState.Crawlspace: lateralMovement *= crawlSpeed; groundCastDistance = Mathf.Max(crawlRadius, crawlHeight / 2) + 0.01f; break;
             default: lateralMovement *= walkSpeed; break;
         }
 
