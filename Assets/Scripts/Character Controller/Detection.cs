@@ -25,11 +25,11 @@ public class Detection : MonoBehaviour
 
         inCrawlSpace = IsCrawlSpace(colliders);
 
-        if (inCrawlSpace && CharacterMovement.movementState != CharacterMovement.MovementState.Crawlspace)
+        if (CharacterMovement.movementState != CharacterMovement.MovementState.Crawlspace && inCrawlSpace)
         {
             CharacterMovement.EnableCrawlSpaceMovement();
         }
-        else if (!inCrawlSpace && CharacterMovement.movementState == CharacterMovement.MovementState.Crawlspace)
+        else if (CharacterMovement.movementState == CharacterMovement.MovementState.Crawlspace && !inCrawlSpace)
         {
             CharacterMovement.DisableCrawlSpaceMovement();
         }

@@ -8,18 +8,26 @@ public class CharacterMovement : MonoBehaviour
     public Camera playerCamera;
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
+    public float crouchSpeed = 3f;
+    public float crawlSpeed = 3f;
     public float climbSpeed = 3f;
+
+    [Header("")]
+
+    public float defaultHeight = 2f;
+    public float defaultRadius = 0.5f;
+    public float crouchHeight = 1f;
+    public float crouchRadius { get { return defaultRadius; } }
+    public float crawlHeight = 0.3f;
+    public float crawlRadius = 0.3f;
+
+    [Header("")]
+
     public float jumpPower = 7f;
     public float gravity = 10f;
     public float lookSpeed = 2f;
     public float lookXLimit = 90f;
-    public float defaultHeight = 2f;
-    public float defaultRadius = 0.5f;
-    public float crouchHeight = 1f;
-    public float crawlHeight = 0.01f;
-    public float crawlRadius = 0.01f;
-    public float crouchSpeed = 3f;
-    public float crawlSpeed = 3f;
+
 
     [Header("")]
 
@@ -27,23 +35,17 @@ public class CharacterMovement : MonoBehaviour
 
     public enum MovementState
     {
-        Ground,
-        Crawlspace,
-        Ladder,
-    }
-
-    private enum GroundMovementState
-    {
-        Crouch,
         Walk,
-        Run
+        Run,
+        Crouch,
+        Crawlspace,
+        Fall,
+        Ladder
     }
 
-    public MovementState movementState = MovementState.Ground;
-    private GroundMovementState groundMovementState = GroundMovementState.Walk;
+    public MovementState movementState = MovementState.Walk;
 
     private Vector3 lateralMovement = Vector3.zero;
-    private float verticalSpeed = 0f;
 
     private float rotationX = 0;
     private CharacterController characterController;
@@ -66,45 +68,22 @@ public class CharacterMovement : MonoBehaviour
     {
         if (movementState == MovementState.Ladder && !Detection.InLadderRange(ladder))
         {
-            SetMovementState(MovementState.Ground);
+            SetMovementState(MovementState.Walk);
+        }
+
+        if (Input.GetKeyDown(InputMappings.Crouch))
+        {
+            ToggleCrouch();
         }
 
         switch(movementState)
         {
-            case MovementState.Ground: GroundMovement(); break;
-            case MovementState.Ladder: LadderMovement(); break;
-            case MovementState.Crawlspace: CrawlSpaceMovement(); break;
-            default: characterController.Move(Vector3.zero); break;
-        }
-    }
-
-    private void GroundMovement()
-    { 
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
-
-        lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
-
-        groundMovementState = SelectGroundMovementState();
-
-        switch (groundMovementState)
-        {
-            case GroundMovementState.Crouch: lateralMovement *= crouchSpeed; break;
-            case GroundMovementState.Walk: lateralMovement *= walkSpeed; break;
-            case GroundMovementState.Run: lateralMovement *= runSpeed; break;
+            case MovementState.Fall: Fall(); break;
+            case MovementState.Ladder: ClimbLadder(); break;
+            default: DoGroundMovement(); break;
         }
 
-        if (Input.GetButton("Jump") && characterController.isGrounded)
-        {
-            verticalSpeed = jumpPower;
-        }
-
-        if (!characterController.isGrounded)
-        {
-            verticalSpeed -= gravity * Time.deltaTime;
-        }
-
-        characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
+        Debug.Log(movementState);
 
         AimCamera();
     }
@@ -116,12 +95,11 @@ public class CharacterMovement : MonoBehaviour
 
         switch(setTo)
         {
-            case MovementState.Ground:
-                movementState = MovementState.Ground;
+            case MovementState.Crouch:
+                SetHeight(crouchHeight);
+
                 break;
-            case MovementState.Ladder:
-                movementState = MovementState.Ladder;
-                break;
+
             case MovementState.Crawlspace:
                 movementState = MovementState.Crawlspace;
 
@@ -130,29 +108,15 @@ public class CharacterMovement : MonoBehaviour
 
                 break;
         }
-    }
 
-    private GroundMovementState SelectGroundMovementState()
-    {
-        if (Input.GetKey(InputMappings.Run))
-        {
-            return GroundMovementState.Run;
-        }
-        else if (Input.GetKey(InputMappings.Crouch))
-        {
-            return GroundMovementState.Crouch;
-        }
-        else
-        {
-            return GroundMovementState.Walk;
-        }
+        movementState = setTo;
     }
 
     public bool ToggleLadderMovement(Ladder _ladder)
     {
         SetMovementState (
             movementState == MovementState.Ladder ?
-            MovementState.Ground :
+            MovementState.Walk :
             MovementState.Ladder);
 
         if (movementState == MovementState.Ladder)
@@ -166,6 +130,14 @@ public class CharacterMovement : MonoBehaviour
         return false;
     }
 
+    private void ToggleCrouch()
+    {
+        SetMovementState (
+        movementState == MovementState.Crouch ?
+        MovementState.Walk :
+        MovementState.Crouch);
+    }
+
     public void EnableCrawlSpaceMovement()
     {
         SetMovementState(MovementState.Crawlspace);
@@ -173,10 +145,20 @@ public class CharacterMovement : MonoBehaviour
 
     public void DisableCrawlSpaceMovement()
     {
-        SetMovementState(MovementState.Ground);
+        SetMovementState(MovementState.Walk);
     }
 
-    private void LadderMovement()
+    private void DoGroundMovement()
+    {
+        characterController.Move(GroundMoveVector());
+    }
+    
+    private void Fall()
+    {
+        characterController.Move(Physics.gravity * Time.deltaTime);
+    }
+
+    private void ClimbLadder()
     {
         Transform ladderT = ladder.transform;
 
@@ -206,20 +188,34 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    private void CrawlSpaceMovement()
-    {
+    private Vector3 GroundMoveVector()
+    { 
+        float verticalSpeed = 0f;
+        float groundCastDistance = Mathf.Max(defaultRadius, defaultHeight) + 0.01f;
+
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
         lateralMovement = right * Input.GetAxis("Horizontal") + forward * Input.GetAxis("Vertical");
 
-        groundMovementState = SelectGroundMovementState();
+        switch (movementState)
+        {
+            case MovementState.Run: lateralMovement *= runSpeed; break;
+            case MovementState.Crouch: lateralMovement *= crouchSpeed; groundCastDistance = Mathf.Max(crouchRadius, crouchHeight) + 0.01f; break;
+            case MovementState.Crawlspace: lateralMovement *= crawlSpeed; groundCastDistance = Mathf.Max(crawlRadius, crawlHeight) + 0.01f; break;
+            default: lateralMovement *= walkSpeed; break;
+        }
 
-        lateralMovement *= crawlSpeed;
+        if(Input.GetButton("Jump"))
+        {
+            verticalSpeed = jumpPower;
+        }
+        else if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCastDistance))
+        {
+            verticalSpeed = -1.8f;
+        }
 
-        characterController.Move((lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime);
-
-        AimCamera();
+        return (lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime;
     }
 
     private void AimCamera()
