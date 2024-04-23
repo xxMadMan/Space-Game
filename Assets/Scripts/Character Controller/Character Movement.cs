@@ -71,11 +71,16 @@ public class CharacterMovement : MonoBehaviour
     {
         if (movementState == MovementState.Ladder && !Detection.InLadderRange(ladder))
         {
-            SetMovementState(MovementState.Walk);
+            SetMovementState(MovementState.Fall);
         }
 
         if (characterController.isGrounded)
         {
+            if (movementState == MovementState.Fall)
+            {
+                SetMovementState(MovementState.Walk);
+            }
+
             if (Input.GetKeyDown(InputMappings.Crouch))
             {
                 ToggleCrouch();
@@ -90,6 +95,10 @@ public class CharacterMovement : MonoBehaviour
             {
                 SetMovementState(MovementState.Walk);
             }
+        }
+        else if (movementState != MovementState.Ladder && movementState != MovementState.Fall)
+        {
+            SetMovementState(MovementState.Fall);
         }
 
         switch (movementState)
@@ -180,7 +189,7 @@ public class CharacterMovement : MonoBehaviour
     
     private void Fall()
     {
-        characterController.Move(Physics.gravity * Time.deltaTime);
+        characterController.Move(Vector3.up * -gravity * Time.deltaTime);
     }
 
     private void ClimbLadder()
@@ -218,6 +227,15 @@ public class CharacterMovement : MonoBehaviour
         float verticalSpeed = 0f;
         float groundCastDistance = Mathf.Max(defaultRadius, defaultHeight / 2) + 0.01f;
 
+        if(Input.GetButton("Jump"))
+        {
+            verticalSpeed = jumpPower;
+        }
+        else if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCastDistance))
+        {
+            verticalSpeed = -gravity;
+        }
+
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
@@ -229,15 +247,6 @@ public class CharacterMovement : MonoBehaviour
             case MovementState.Crouch: lateralMovement *= crouchSpeed; groundCastDistance = Mathf.Max(crouchRadius, crouchHeight / 2) + 0.01f; break;
             case MovementState.Crawlspace: lateralMovement *= crawlSpeed; groundCastDistance = Mathf.Max(crawlRadius, crawlHeight / 2) + 0.01f; break;
             default: lateralMovement *= walkSpeed; break;
-        }
-
-        if(Input.GetButton("Jump"))
-        {
-            verticalSpeed = jumpPower;
-        }
-        else if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundCastDistance))
-        {
-            verticalSpeed = -1.8f;
         }
 
         return (lateralMovement + Vector3.up * verticalSpeed) * Time.deltaTime;
