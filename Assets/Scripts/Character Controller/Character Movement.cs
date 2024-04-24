@@ -77,7 +77,7 @@ public class CharacterMovement : MonoBehaviour
             SetMovementState(MovementState.Fall);
         }
 
-        isGround = Physics.Raycast(transform.position, Vector3.down, out groundHit, GroundCastDistance());
+        isGround = CastGround();
 
         if (isGround)
         {
@@ -117,6 +117,14 @@ public class CharacterMovement : MonoBehaviour
 
         AimCamera();
 
+    }
+
+    private bool CastGround()
+    {
+        float radius = characterController.radius * transform.lossyScale.y;
+
+        return Physics.SphereCast(
+            transform.position + Vector3.up * radius, radius, Vector3.down, out groundHit, GroundCastDistance());
     }
 
     private float GroundCastDistance()
