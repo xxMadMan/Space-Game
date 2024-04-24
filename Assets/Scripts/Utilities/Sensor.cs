@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class Sensor : MonoBehaviour
 {
-    GameObject target;
+    public GameObject target;
     
     public float range = 4f;
 
@@ -12,10 +12,6 @@ public class Sensor : MonoBehaviour
     public UnityEvent m_onInRange;
 
     public UnityEvent m_onOutOfRange;
-
-    void Awake(){
-        target = GameObject.FindGameObjectWithTag("Player");
-    }
 
     private void Update()
     {
