@@ -615,8 +615,6 @@ GameObject:
   - component: {fileID: 384336176}
   - component: {fileID: 384336175}
   - component: {fileID: 384336174}
-  - component: {fileID: 384336179}
-  - component: {fileID: 384336178}
   m_Layer: 0
   m_Name: Table Top
   m_TagString: Untagged
@@ -711,36 +709,6 @@ Transform:
   - {fileID: 788719388}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &384336178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384336173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd976b20457805c4f9925f127eb84fa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &384336179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384336173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 3
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &462302470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1671,6 +1639,7 @@ GameObject:
   m_Component:
   - component: {fileID: 788719388}
   - component: {fileID: 788719391}
+  - component: {fileID: 788719392}
   m_Layer: 0
   m_Name: Crawl Space
   m_TagString: Untagged
@@ -1714,6 +1683,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.75, y: 0.79, z: 0.85}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &788719392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788719387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd976b20457805c4f9925f127eb84fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &795205172
 GameObject:
   m_ObjectHideFlags: 0
@@ -5569,13 +5550,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8264935963690298916, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
-      propertyPath: crawlHeight
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8264935963690298916, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
-      propertyPath: crawlRadius
-      value: 0.3
+    - target: {fileID: 7383311058801632015, guid: 4d9505b3ac0a5674b914d5148a3062ea, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
