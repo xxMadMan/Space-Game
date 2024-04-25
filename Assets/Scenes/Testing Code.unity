@@ -1462,6 +1462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: I want to kill myself
+  duration: 2
 --- !u!1 &606666941
 GameObject:
   m_ObjectHideFlags: 0
@@ -3952,6 +3953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueText: CONFUSED SCREECHING
+  duration: 2
 --- !u!114 &1451879130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5635,6 +5637,10 @@ PrefabInstance:
     - target: {fileID: 2081138277932722244, guid: 885911fef398aa34da9784d9b805c3d0, type: 3}
       propertyPath: m_Name
       value: '>> GAME MANAGER'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595078189901611519, guid: 885911fef398aa34da9784d9b805c3d0, type: 3}
+      propertyPath: m_Name
+      value: GameplayUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

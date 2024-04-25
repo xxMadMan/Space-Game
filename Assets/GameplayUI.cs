@@ -12,13 +12,81 @@ public class GameplayUI : MonoBehaviour
 
     public TextMeshProUGUI dialogueBox;
 
+    private List<IEnumerator> dialogueQueue = new();
+
+    private bool displayingDialogue;
+    private bool skipDialogue;
+
+    private const float DialogueCooldown = 0.4f;
+
     void Awake()
     {
-        sceneInstance = this;    
+        sceneInstance = this;
     }
 
-    public static void SetDialogue(string setTo){
-        sceneInstance.dialogueBox.text = setTo;
+    private void Start()
+    {
+        dialogueBox.enabled = false;
     }
 
+    private void Update()
+    {
+        if (!displayingDialogue && dialogueQueue.Count > 0)
+        {
+            StartCoroutine(dialogueQueue[0]);
+        }
+    }
+
+    public static void QueueDialogue(string dialogue, float duration)
+    {
+        if (sceneInstance == null)
+        {
+            sceneInstance = FindObjectOfType<GameplayUI>();
+
+            if (sceneInstance == null)
+            {
+                Debug.Log("GameplayUI not found in scene");
+
+                return;
+            }
+        }
+
+        sceneInstance.dialogueQueue.Add(sceneInstance.DisplayDialogue(dialogue, duration));
+    }
+
+    public static void SkipDialogue()
+    {
+        if (sceneInstance.dialogueQueue.Count > 0)
+        {
+            sceneInstance.skipDialogue = true;
+        }
+    }
+
+    private IEnumerator DisplayDialogue(string dialogue, float duration)
+    {
+        displayingDialogue = true;
+
+        sceneInstance.dialogueBox.text = dialogue;
+        dialogueBox.enabled = true;
+
+        float timer = duration;
+
+        while (timer > 0 && !skipDialogue)
+        {
+            timer -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (!skipDialogue)
+        {
+            yield return new WaitForSeconds(DialogueCooldown);
+        }
+
+        dialogueQueue.RemoveAt(0);
+
+        dialogueBox.enabled = false;
+        displayingDialogue = false;
+        skipDialogue = false;
+    }
 }
