@@ -35,7 +35,11 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
+<<<<<<< HEAD
     globalScale: 1
+=======
+    globalScale: 0.01
+>>>>>>> Main
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -71,7 +75,11 @@ ModelImporter:
     strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
+<<<<<<< HEAD
     normalImportMode: 0
+=======
+    normalImportMode: 1
+>>>>>>> Main
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
@@ -90,7 +98,11 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+<<<<<<< HEAD
     globalScale: 1
+=======
+    globalScale: 0.01
+>>>>>>> Main
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

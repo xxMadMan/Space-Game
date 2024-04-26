@@ -5,8 +5,15 @@ using UnityEngine;
 public class DialogueText : MonoBehaviour
 {
     public string dialogueText;
+    public float duration = 2f;
     
-    public void DisplayDialogue(){
-        GameplayUI.SetDialogue(dialogueText);
+    public void QueueDialogue()
+    {
+        GameplayUI.QueueDialogue(dialogueText, duration);
+    }
+
+    public void SkipDialogue()
+    {
+        GameplayUI.SkipDialogue();
     }
 }
