@@ -81,7 +81,7 @@ MonoBehaviour:
   crouchSpeed: 3
   crawlSpeed: 3
   climbSpeed: 6
-  heightSpeed: 2.5
+  heightSpeed: 6
   gravity: 10
   playerCamera: {fileID: 6517221155129004207}
   lookSpeed: 2

@@ -214,7 +214,7 @@ public class PlayerMovement
         else
 */
         {
-            verticalSpeed = PlayerDetection.groundClampDistance / Time.fixedDeltaTime * (Player.heightSpeed * Time.fixedDeltaTime);
+            verticalSpeed = PlayerDetection.groundClampDistance * Player.heightSpeed;
         }
 
         Vector3 forward = transform.TransformDirection(Vector3.forward);

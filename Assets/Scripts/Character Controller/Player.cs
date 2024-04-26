@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public float crouchSpeed = 3f;
     public float crawlSpeed = 3f;
     public float climbSpeed = 6f;
-    public float heightSpeed = 2.5f;
+    public float heightSpeed = 6f;
     //public float jumpPower = 7f;
     public float gravity = 10f;
 

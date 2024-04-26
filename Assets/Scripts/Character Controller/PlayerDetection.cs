@@ -20,10 +20,10 @@ public class PlayerDetection
             {
                 return 0f;
             }
-
+            
             return
                 groundHit.point.y -
-                transform.position.y - (Mathf.Max(Player.radius, Player.height) / 2f + Player.skinWidth);
+                (transform.position.y - (Mathf.Max(Player.radius, Player.height) / 2f + Player.skinWidth));
         }
     }
 
@@ -79,9 +79,9 @@ public class PlayerDetection
     private float CrawlSpaceDetectionRadius()
     {
         float radiusScaled = Player.defaultRadius * Mathf.Max(Player.transform.lossyScale.x, Player.transform.lossyScale.z);
-        float playerSpeedFactor = 1f + (Mathf.Abs(Player.velocity.x) + Mathf.Abs(Player.velocity.z)) * 0.3f;
+        float multiplier = 2f; // inCrawlSpace ? 2f : 2.5f;
 
-        return (radiusScaled + 0.5f) * playerSpeedFactor + Player.skinWidth;
+        return (radiusScaled + 0.5f) * multiplier + Player.skinWidth;
     }
 
     public bool InLadderRange(Ladder ladder)
