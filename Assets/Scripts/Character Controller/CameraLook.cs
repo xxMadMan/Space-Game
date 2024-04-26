@@ -6,6 +6,7 @@ using UnityEngine.Animations;
 public class CameraLook : MonoBehaviour
 {
     public Player player;
+
     private PositionConstraint playerPosConstraint;
     private RotationConstraint playerRotConstraint;
 
@@ -39,8 +40,8 @@ public class CameraLook : MonoBehaviour
 
         while (timer < smoothDuration)
         {
-            transform.position = Vector3.Lerp(startPosition, lookFrom, timer / smoothDuration);
-            transform.rotation = Quaternion.LookRotation(lookAt - transform.position);
+            transform.position = Vector3.Lerp(startPosition, lookFrom, MathLibrary.SlowFastSlow(timer / smoothDuration));
+            transform.rotation = Quaternion.Lerp(startRotation, Quaternion.LookRotation(lookAt - transform.position), MathLibrary.SlowFastSlow(timer / smoothDuration));
 
             timer += Time.deltaTime;
 
@@ -64,8 +65,8 @@ public class CameraLook : MonoBehaviour
 
         while (timer < smoothDuration)
         {
-            transform.position = Vector3.Slerp(startPosition, player.camPosition.position, timer / smoothDuration);
-            transform.rotation = Quaternion.Slerp(startRotation, player.camPosition.rotation, timer / smoothDuration);
+            transform.position = Vector3.Slerp(startPosition, player.camPosition.position, MathLibrary.SlowFastSlow(timer / smoothDuration));
+            transform.rotation = Quaternion.Slerp(startRotation, player.camPosition.rotation, MathLibrary.SlowFastSlow(timer / smoothDuration));
 
             timer += Time.deltaTime;
 
