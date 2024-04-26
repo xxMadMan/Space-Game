@@ -71,7 +71,7 @@ public class PlayerInteraction
                         PickUpController.PickUpObject(_interactable.gameObject);
                     }
 
-                    _interactable.InteractObject();
+                    _interactable.InteractObject(Player);
 
                     if (_interactable.GetComponent<Ladder>())
                     {

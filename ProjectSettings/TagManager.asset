@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - CurrentCamPosition
   - Component
+  - PlayerCamPosition
   layers:
   - Default
   - TransparentFX

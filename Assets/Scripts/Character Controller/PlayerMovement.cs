@@ -237,7 +237,8 @@ public class PlayerMovement
     {
         rotationX += -Input.GetAxis("Mouse Y") * Player.lookSpeed;
         rotationX = Mathf.Clamp(rotationX, -Player.lookXLimit, Player.lookXLimit);
-        Player.playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * Player.lookSpeed, 0);
+        Player.camPosition.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
     }
 }

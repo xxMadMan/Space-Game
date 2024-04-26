@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [Header("Camera")]
 
     public Camera playerCamera;
+    public CameraLook camLook { get; private set; }
+    public Transform camPosition { get; private set; }
 
     public float lookSpeed = 2f;
     public float lookXLimit = 80f;
@@ -66,6 +68,24 @@ public class Player : MonoBehaviour
         PickUpController.Initialize(this);
         Interaction.Initialize(this, PickUpController, Movement);
         Movement.Initialize(this, Detection, CharacterController);
+
+        camPosition = FindCamPosition();
+        camLook = playerCamera.GetComponent<CameraLook>();
+    }
+
+    private Transform FindCamPosition()
+    {
+        foreach(Transform t in transform.GetComponentsInChildren<Transform>())
+        {
+            if (t.CompareTag("PlayerCamPosition"))
+            {
+                return t;
+            }
+        }
+
+        Debug.Log($"Couldn't find object tagged PlayerCamPosition in {gameObject.name}");
+
+        return null;
     }
 
     void Start()

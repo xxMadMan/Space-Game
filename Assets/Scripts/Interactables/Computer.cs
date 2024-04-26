@@ -4,60 +4,32 @@ using UnityEngine;
 
 public class Computer : Interactable
 {
-    GameObject playerObject;
-    CameraLook camLook;
-    int cameraState = 0;
-    GameObject camPosition;
-    public float waitSpeed;
+    public Transform lookPosition;
 
-    void Awake(){
-        playerObject = GameObject.FindGameObjectWithTag("Player");
-        camLook = Camera.main.transform.GetComponent<CameraLook>();
-        camPosition = GameObject.FindWithTag("CurrentCamPosition");
-    }
+    private GameObject playerObj;
 
     protected override void OnInteract()
     {
-        StopAllCoroutines();
-        Camera.main.transform.parent = null;
-        playerObject.SetActive(false);
-        cameraState = 2;
-    }
+        playerObj = player.gameObject;
+        playerObj.SetActive(false);
 
-    void FixedUpdate(){
-        switch(cameraState){
-            default:
-                //print("Default State");
-                break;
-            case 2:
-                //moving from player to screen object
-                camLook.PlayerToScreenMovement();
-                //Debug.Log("Looking At Screeeen");
-                break;
-            case 1:
-                //moving from screen back to player
-                camLook.ScreenBackToPlayer(camPosition.transform);
-                //Debug.Log("RETURNING TO PLAYER");
-                break;
-        }
+        player.camLook.LookAtScreen(transform.position, lookPosition.position);
     }
 
     void Update(){
-        if (playerObject.activeInHierarchy == false)
+        if (playerObj != null && playerObj.activeInHierarchy == false)
         {
-            if (Input.GetKeyDown(InputMappings.Throw)){
-                playerObject.SetActive(true);
-                Camera.main.transform.parent = playerObject.gameObject.transform;
-                cameraState = 1;
-                StartCoroutine(PlayerEnable());
+            if (Input.GetKeyDown(InputMappings.Throw))
+            {
+                playerObj.SetActive(true);
+                player.camLook.ReturnToPlayer();
             }
         }
     }
 
     IEnumerator PlayerEnable() {
         //Debug.Log("Waiting For Default");
-        yield return new WaitForSeconds(waitSpeed);
-        cameraState = 0;
+        yield return null; // new WaitUntil();
         StopAllCoroutines();
     }
 }

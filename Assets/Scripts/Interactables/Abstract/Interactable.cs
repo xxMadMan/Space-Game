@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Outline))]
 public abstract class Interactable : MonoBehaviour
 {
-    public void InteractObject()
+    protected Player player;
+
+    public void InteractObject(Player _player)
     {
+        player = _player;
         OnInteract();
     }
 

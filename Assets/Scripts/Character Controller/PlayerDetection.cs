@@ -79,7 +79,7 @@ public class PlayerDetection
     private float CrawlSpaceDetectionRadius()
     {
         float radiusScaled = Player.defaultRadius * Mathf.Max(Player.transform.lossyScale.x, Player.transform.lossyScale.z);
-        float multiplier = 2f; // inCrawlSpace ? 2f : 2.5f;
+        float multiplier = inCrawlSpace ? 1.5f : Mathf.Min(Player.velocity.magnitude - Mathf.Abs(Player.velocity.y), 1.5f);
 
         return (radiusScaled + 0.5f) * multiplier + Player.skinWidth;
     }
